@@ -46,12 +46,13 @@ func matchLine(line []byte, pattern string) (bool, error) {
 
 	var ok bool
 
-	switch pattern {
-	case "\\d":
+	if pattern == "\\d" {
 		ok = bytes.ContainsAny(line, "0123456789")
-	case "\\w":
+	} else if pattern == "\\w" {
 		ok = bytes.ContainsAny(line, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-	default:
+	} else if pattern[0] == '[' && pattern[len(pattern)-1] == ']' {
+		ok = bytes.ContainsAny(line, pattern[1:len(pattern)-1])
+	} else {
 		ok = bytes.ContainsAny(line, pattern)
 	}
 
